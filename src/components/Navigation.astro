@@ -1,18 +1,26 @@
 ---
+import ThemeToggle from './ThemeToggle.vue';
+import { Image } from 'astro:assets';
+import lightLogo from "../assets/light-logo.svg";
+import darkLogo from "../assets/dark-logo.svg";
+import { $theme } from "../themeStore.ts";
+import { useStore } from "@nanostores/vue";
 const pathname = new URL(Astro.request.url).pathname;
 const currentPath = pathname.slice(1);
-const theme = "light";
+const theme = useStore($theme);
 ---
 
 <div class="flex w-full justify-center p-8">
-  <div class="flex w-full justify-between gap-5 max-w-xl">
-    <div>logo</div>
-    <div class="flex gap-5">
-      <a href="/books" class={currentPath === "books" ? "text-blue-600 font-black" : "text-blue-600 font-semibold"}>books</a>
-      <a href="/music" class={currentPath === "music" ? "text-green-600 font-black" : "text-green-600 font-semibold"}>music</a>
-      <a href="/code" class={currentPath === "code" ? "text-red-600 font-black" : "text-red-600 font-semibold"}>code</a>
+  <div class="flex w-full justify-between items-center gap-5 max-w-4xl">
+    <a href="/">
+      <Image src={theme.value === 'dark' ? darkLogo : lightLogo } alt="just vibes logo" width="130" class="mt-5" loading="eager" />
+    </a>
+    <div class="flex gap-5 max-w-2xl">
+      <a href="/books" class={currentPath === "books" ? "text-blue-700 dark:text-blue-400 font-black" : "text-blue-700 dark:text-blue-400 font-semibold"}>books</a>
+      <a href="/music" class={currentPath === "music" ? "text-green-700 dark:text-green-400 font-black" : "text-green-700 dark:text-green-400 font-semibold"}>music</a>
+      <a href="/code" class={currentPath === "code" ? "text-orange-700 dark:text-orange-400 font-black" : "text-orange-700 dark:text-orange-400 font-semibold"}>code</a>
     </div>
-    <div>{theme}</div>
+    <ThemeToggle client:only />
   </div>
 </div>
 
