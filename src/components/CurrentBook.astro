@@ -1,0 +1,58 @@
+---
+import { HARDCOVER_API_URL } from "astro:env/client"
+import { HARDCOVER_API_KEY } from "astro:env/server"
+import { Image } from 'astro:assets';
+
+const currentBookQuery = `
+{
+  me {
+    user_books(where: {status_id: {_eq: 2}}, order_by: {updated_at: desc}, limit: 1) {
+      user_book_reads(order_by: {started_at: desc}) {
+        edition {
+          book {
+            rating
+          }
+          title
+          contributions {
+            author {
+              name
+            }
+          }
+          image {
+            url
+          }
+        }
+        progress
+      }
+    }
+  }
+}`;
+
+const getCurrentBook = await fetch(`${HARDCOVER_API_URL}`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type':'application/json',
+      authorization: `Bearer ${HARDCOVER_API_KEY}`,
+    },
+    body: JSON.stringify({
+      query: currentBookQuery
+    }),
+  });
+
+const json = await getCurrentBook.json();
+const currentBook = json.data.me[0].user_books[0].user_book_reads[0];
+---
+
+<div class="flex flex-col justify-center items-center gap-4 w-full p-4 border-2 border-blue-600 dark:border-blue-400 rounded-xl">
+  <div class="flex gap-4">
+    <Image src={currentBook.edition.image.url} alt={currentBook.edition.title} height="112" width="74" loading="eager" />
+    <div class="flex flex-col">
+      <h3 class="font-semibold text-xl">{currentBook.edition.title}</h3>
+      <p>{currentBook.edition.contributions[0].author.name}</p>
+      <p>{currentBook.edition.book.rating.toFixed(1)} / 5</p>
+      <p>{currentBook.progress.toFixed(0)}%</p>
+    </div>
+  </div>
+</div>
+
