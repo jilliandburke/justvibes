@@ -1,6 +1,25 @@
 <script setup lang="ts">
+import { onBeforeMount } from "vue";
 import { $theme } from "../themeStore";
 import { useStore } from "@nanostores/vue";
+
+onBeforeMount(() => {
+  let theme;
+
+  if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+    theme = localStorage.getItem("theme") ?? "dark";
+  }
+
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    theme = "dark";
+  } else {
+    theme = "light";
+  }
+
+  if (theme) {
+    $theme.set(theme);
+  }
+});
 
 const theme = useStore($theme);
 
@@ -10,11 +29,10 @@ if (theme.value === "light") {
   document.documentElement.classList.add("dark");
 }
 
-window.localStorage.setItem("theme", theme.value);
-
 const handleToggleClick = () => {
   const element = document.documentElement;
   const isDark = element.classList.contains("dark");
+
   if (isDark) {
     element.classList.remove("dark");
     localStorage.setItem("theme", "light");

@@ -20,7 +20,7 @@ const theme = useStore($theme);
       <a href="/music" class={currentPath === "music" ? "text-green-700 dark:text-green-400 font-black" : "text-green-700 dark:text-green-400 font-semibold"}>music</a>
       <a href="/code" class={currentPath === "code" ? "text-orange-700 dark:text-orange-400 font-black" : "text-orange-700 dark:text-orange-400 font-semibold"}>code</a>
     </div>
-    <ThemeToggle client:only />
+    <ThemeToggle client:only="vue" />
   </div>
 </div>
 
