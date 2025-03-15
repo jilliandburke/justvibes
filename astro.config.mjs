@@ -7,9 +7,12 @@ import vue from "@astrojs/vue";
 
 import icon from "astro-icon";
 
+import vercel from "@astrojs/vercel";
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), vue(), icon()],
+
   env: {
     schema: {
       HARDCOVER_API_URL: envField.string({
@@ -23,4 +26,7 @@ export default defineConfig({
       }),
     },
   },
+
+  adapter: vercel(),
 });
+
